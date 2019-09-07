@@ -29,6 +29,8 @@ int main(int argc, char **argv) {
         err = lock(argv[2], argv[3]);
     } else if (strcmp(argv[1], "unlock") == 0 && argc == 4) {
         err = unlock(argv[2], argv[3]);
+    } else if (strcmp(argv[1], "create") == 0 && argc == 4) {
+        err = create(argv[2], argv[3]);
     } else {
         printf("Unknown command or wrong options\n");
         show_usage();

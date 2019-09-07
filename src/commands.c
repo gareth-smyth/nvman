@@ -34,6 +34,7 @@ void show_usage() {
     printf("nvman delete <app_name> <title_name> - Delete the title\n");
     printf("nvman lock <app_name> <title_name> - Lock the title\n");
     printf("nvman unlock <app_name> <title_name> - Unlock the title\n");
+    printf("nvman create <app_name> <title_name> - Create a new save with 10 bytes of dummy data.  Will overwrite any unlocked title with the same app name and title name\n");
 }
 
 int show_info() {
@@ -121,6 +122,29 @@ int unlock(const char *appName, const char *titleName) {
 
     if (!err) {
         printf("Could not unlock app %s title %s with error %d\n", appName, titleName, err);
+    } else {
+        printf("Success\n");
+    }
+
+    return err;
+}
+
+int create(const char *appName, const char *titleName) {
+    int err;
+    char data[] = "0123456789";
+    int protection = get_protection(appName, titleName);
+
+    printf("Creating %s %s\n", appName, titleName);
+
+    if (protection > -1 && (protection & NVEF_DELETE)) {
+        printf("App '%s' title '%s' exists and is locked\n", appName, titleName);
+        return (8);
+    }
+
+    err = StoreNV(appName, titleName, &data, 1, TRUE);
+
+    if (err) {
+        printf("Could not create app %s title %s with error %d\n", appName, titleName, err);
     } else {
         printf("Success\n");
     }

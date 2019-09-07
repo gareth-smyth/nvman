@@ -14,7 +14,7 @@ Just run `make`
 * `nvman delete <app_name> <title_name>` - Delete the title
 * `nvman unlock <app_name> <title_name>` - Unlock the title
 * `nvman lock <app_name> <title_name>` - Lock the title
-* TODO `nvman create <app_name> <title_name> <size in bytes>` - Create a new save with dummy data
+* `nvman create <app_name> <title_name>` - Create a new save with 10 bytes of dummy data.  Will overwrite any unlocked title with the same app name and title name.
 * TODO `nvman dump <output file>` - Dump the entire non volatile storage contents
 * TODO `nvman restore <input file>` - Restore a previously dumped non volatile storage over the top of existing
 
