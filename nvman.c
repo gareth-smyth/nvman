@@ -8,36 +8,58 @@
 struct Library *NVBase;
 struct NVInfo *info;
 struct MinList *items;
-struct MinNode *entry;
+struct NVEntry *entry;
 
-int main()
-{
-  /* UWORD err;
-  char data[] = "0123456789"; */
-  printf("NVRam Manager\n");
+int show_info();
 
-  NVBase = OpenLibrary("nonvolatile.library", 40L);
-  if(!NVBase) {
-    printf("Could not open nonvolatile.library\n");
-  }
+int main() {
+    int err;
 
-  info = GetNVInfo(FALSE);
-  printf("Max: %lu\n", info->nvi_MaxStorage);
-  printf("Free:%lu\n", info->nvi_FreeStorage);
+    printf("NVRam Manager\n\n");
 
-  /* err = StoreNV("MyApp", "MyItem2", &data, 1, TRUE);
-  printf("Store result:%u\n", err); */
+    NVBase = OpenLibrary("nonvolatile.library", 40L);
+    if (!NVBase) {
+        printf("Could not open nonvolatile.library\n");
+        return(1);
+    }
 
-  items = GetNVList(NULL, FALSE);
+    err = show_info();
 
-  for(entry = items->mlh_Head; entry->mln_Succ != NULL; entry = entry->mln_Succ) {
-    printf("%s\n", ((struct NVEntry*)entry)->nve_Name);
-    printf("%lu\n", ((struct NVEntry*)entry)->nve_Size);
-    printf("%lu\n", ((struct NVEntry*)entry)->nve_Protection);
-  }
+    CloseLibrary(NVBase);
 
-  FreeNVData(items);
-
-  CloseLibrary(NVBase);
+    return err;
 }
 
+int show_info() {
+    STRPTR appName;
+    info = GetNVInfo(FALSE);
+    if (!info) {
+        printf("Could not get info for non volatile storage\n");
+        return(2);
+    }
+
+    printf("Max Storage:  %lu bytes\n", info->nvi_MaxStorage * 10);
+    printf("Free       :%lu bytes\n\n", info->nvi_FreeStorage * 10);
+
+    items = GetNVList(NULL, FALSE);
+
+    if(IsListEmpty((struct List*)items)) {
+        printf("Non volatile storage is empty\n");
+        return(3);
+    }
+
+    printf("Stored titles\n");
+    printf("App name             Title                Size Locked\n");
+    for (entry = (struct NVEntry *)items->mlh_Head;
+         entry->nve_Node.mln_Succ != NULL;
+         entry = (struct NVEntry *)entry->nve_Node.mln_Succ) {
+        if(((entry->nve_Protection) & ((ULONG)NVEF_APPNAME))) {
+            appName = entry->nve_Name;
+        } else {
+            printf("%-21s%-21s%-5lu", appName, entry->nve_Name, entry->nve_Size);
+            printf("%-5s\n", ((entry->nve_Protection) & ((ULONG) NVEF_DELETE)) ? "Yes" : "No");
+        }
+    }
+
+    FreeNVData(items);
+}
