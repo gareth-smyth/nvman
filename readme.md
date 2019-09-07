@@ -7,7 +7,7 @@ A cli based non-volatile memory manager for the Amiga built on top of nonvolatil
 * AmigaOS NDK 3.9 (setup correctly for VBCC)
 
 ### Build 
-Just run `make` or directly `vc -c99 src/nvman.c src/commands.c src/utils.c -o nvman`
+Just run `make` (tested on win32) or directly `vc -c99 src/nvman.c src/commands.c src/utils.c -o nvman` (tested on winuae)
 
 ### Execution
 * `nvman list` - Show non nonvolatile storage info and list all the apps and titles 
