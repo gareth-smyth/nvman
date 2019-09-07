@@ -1,58 +1,7 @@
-
 #include <stdio.h>
-#include <string.h>
-#include <exec/types.h>
-#include <exec/lists.h>
-#include <proto/exec.h>
 #include <proto/nonvolatile.h>
 
-struct Library *NVBase;
-struct NVInfo *info;
-struct MinList *items;
-struct NVEntry *entry;
-
-int show_info();
-
-void show_usage();
-
-int delete(const char *appName, const char *titleName);
-
-int get_protection(const char *appName, const char *titleName);
-
-int lock(const char *appName, const char *titleName);
-
-int unlock(const char *appName, const char *titleName);
-
-int main(int argc, char **argv) {
-    int err = 0;
-
-    printf("NVRam Manager\n\n");
-
-    NVBase = OpenLibrary("nonvolatile.library", 40L);
-    if (!NVBase) {
-        printf("Could not open nonvolatile.library\n");
-        return (1);
-    }
-
-    if (argc < 2 || strcmp(argv[1], "?") == 0) {
-        show_usage();
-    } else if (strcmp(argv[1], "list") == 0 && argc == 2) {
-        err = show_info();
-    } else if (strcmp(argv[1], "delete") == 0 && argc == 4) {
-        err = delete(argv[2], argv[3]);
-    } else if (strcmp(argv[1], "lock") == 0 && argc == 4) {
-        err = lock(argv[2], argv[3]);
-    } else if (strcmp(argv[1], "unlock") == 0 && argc == 4) {
-        err = unlock(argv[2], argv[3]);
-    } else {
-        printf("Unknown command or wrong options\n");
-        show_usage();
-    }
-
-    CloseLibrary(NVBase);
-
-    return err;
-}
+#include "utils.h"
 
 int delete(const char *appName, const char *titleName) {
     int err;
@@ -88,8 +37,13 @@ void show_usage() {
 }
 
 int show_info() {
+    struct NVInfo *info;
     STRPTR appName;
+    struct MinList *items;
+    struct NVEntry *entry;
+
     info = GetNVInfo(TRUE);
+
     if (!info) {
         printf("Could not get info for non volatile storage\n");
         return (2);
@@ -97,11 +51,13 @@ int show_info() {
 
     printf("Max storage:%lu bytes\n", info->nvi_MaxStorage * 10);
     printf(" Free space:%lu bytes\n\n", info->nvi_FreeStorage * 10);
+    FreeNVData(info);
 
     items = GetNVList(NULL, FALSE);
 
     if (IsListEmpty((struct List *) items)) {
         printf("Non volatile storage is empty\n");
+        FreeNVData(items);
         return (3);
     }
 
@@ -119,6 +75,7 @@ int show_info() {
     }
 
     FreeNVData(items);
+    return(0);
 }
 
 int lock(const char *appName, const char *titleName) {
@@ -169,36 +126,4 @@ int unlock(const char *appName, const char *titleName) {
     }
 
     return err;
-}
-
-int get_protection(const char *appName, const char *titleName) {
-    int protection = -1;
-    BOOL foundApp = FALSE;
-
-    items = GetNVList(NULL, FALSE);
-
-    if (IsListEmpty((struct List *) items)) {
-        printf("Non volatile storage is empty\n");
-        return (3);
-    }
-
-    for (entry = (struct NVEntry *) items->mlh_Head;
-         entry->nve_Node.mln_Succ != NULL;
-         entry = (struct NVEntry *) entry->nve_Node.mln_Succ) {
-        if (((entry->nve_Protection) & ((ULONG) NVEF_APPNAME))) {
-            if (strcmp(appName, entry->nve_Name) == 0) {
-                foundApp = TRUE;
-            } else {
-                foundApp = FALSE;
-            }
-        } else {
-            if (foundApp && (strcmp(titleName, entry->nve_Name) == 0)) {
-                protection = entry->nve_Protection;
-            }
-        }
-    }
-
-    FreeNVData(items);
-
-    return protection;
 }

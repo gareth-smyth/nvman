@@ -8,8 +8,8 @@ else
 	DELCOM = DELETE FORCE
 endif
 
-nvman: nvman.c
-	vc +aos68k nvman.c -o nvman
+nvman: src/nvman.c src/commands.c src/commands.h src/utils.c src/utils.h
+	vc +aos68k src/nvman.c src/commands.c src/utils.c -o nvman
 
 clean:
 	$(DELCOM) nvman
