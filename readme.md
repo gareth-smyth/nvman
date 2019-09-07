@@ -15,6 +15,7 @@ Just run `make` (tested on win32) or directly `vc -c99 src/nvman.c src/commands.
 * `nvman unlock <app_name> <title_name>` - Unlock the title
 * `nvman lock <app_name> <title_name>` - Lock the title
 * `nvman create <app_name> <title_name>` - Create a new save with 10 bytes of dummy data.  Will overwrite any unlocked title with the same app name and title name.
+* TODO `nvman clearall` - Delete all titles in nvram
 * TODO `nvman dump <output file>` - Dump the entire non volatile storage contents
 * TODO `nvman restore <input file>` - Restore a previously dumped non volatile storage over the top of existing
 
@@ -23,3 +24,4 @@ Just run `make` (tested on win32) or directly `vc -c99 src/nvman.c src/commands.
 * Clean up code possibly adding tests
 * Dump/restore individual app/title
 * Interactive mode
+* add force option to all the appropriate command to unlock if necessary
