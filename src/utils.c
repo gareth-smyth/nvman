@@ -20,7 +20,7 @@ int get_protection(const char *appName, const char *titleName) {
     for (entry = (struct NVEntry *) items->mlh_Head;
          entry->nve_Node.mln_Succ != NULL;
          entry = (struct NVEntry *) entry->nve_Node.mln_Succ) {
-        if (((entry->nve_Protection) & ((ULONG) NVEF_APPNAME))) {
+        if (entry->nve_Protection & NVEF_APPNAME) {
             if (strcmp(appName, entry->nve_Name) == 0) {
                 foundApp = TRUE;
             } else {

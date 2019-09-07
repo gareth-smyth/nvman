@@ -66,11 +66,11 @@ int show_info() {
     for (entry = (struct NVEntry *) items->mlh_Head;
          entry->nve_Node.mln_Succ != NULL;
          entry = (struct NVEntry *) entry->nve_Node.mln_Succ) {
-        if (((entry->nve_Protection) & ((ULONG) NVEF_APPNAME))) {
+        if (entry->nve_Protection & NVEF_APPNAME) {
             appName = entry->nve_Name;
         } else {
             printf("%-21s%-21s%-5lu", appName, entry->nve_Name, entry->nve_Size);
-            printf("%-5s\n", ((entry->nve_Protection) & ((ULONG) NVEF_DELETE)) ? "Yes" : "No");
+            printf("%-5s\n", entry->nve_Protection & NVEF_DELETE ? "Yes" : "No");
         }
     }
 
