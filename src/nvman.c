@@ -24,13 +24,21 @@ int main(int argc, char **argv) {
     } else if (strcmp(argv[1], "list") == 0 && argc == 2) {
         err = show_info();
     } else if (strcmp(argv[1], "delete") == 0 && argc == 4) {
-        err = delete(argv[2], argv[3]);
+        err = delete(argv[2], argv[3], FALSE);
+    } else if (strcmp(argv[1], "delete") == 0 && (argc == 5 && strcmp(argv[4], "-f") == 0)) {
+        err = delete(argv[2], argv[3], TRUE);
     } else if (strcmp(argv[1], "lock") == 0 && argc == 4) {
         err = lock(argv[2], argv[3]);
     } else if (strcmp(argv[1], "unlock") == 0 && argc == 4) {
         err = unlock(argv[2], argv[3]);
     } else if (strcmp(argv[1], "create") == 0 && argc == 4) {
-        err = create(argv[2], argv[3]);
+        err = create(argv[2], argv[3], FALSE);
+    } else if (strcmp(argv[1], "create") == 0 && (argc == 5 && strcmp(argv[4], "-f") == 0)) {
+        err = create(argv[2], argv[3], TRUE);
+    } else if (strcmp(argv[1], "deleteall") == 0 && argc == 2) {
+        err = delete_all(FALSE);
+    } else if (strcmp(argv[1], "deleteall") == 0 && (argc == 3 && strcmp(argv[4], "-f") == 0)) {
+        err = delete_all(TRUE);
     } else {
         printf("Unknown command or wrong options\n");
         show_usage();

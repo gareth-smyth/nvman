@@ -16,7 +16,7 @@ endif
 VBCC?=/opt/vbcc/
 NDK=$(VBCC)/NDK_3.9
 NDK_INC=$(NDK)/Include/include_h
-CFLAGS?= -c99 -I$(NDK_INC)/libraries/ -I$(NDK_INC) -I.
+CFLAGS?= -I$(NDK_INC)/libraries/ -I$(NDK_INC) -I.
 
 nvman: src/nvman.c src/commands.c src/commands.h src/utils.c src/utils.h
 	vc +aos68k $(CFLAGS) src/nvman.c src/commands.c src/utils.c -o nvman -lauto -lamiga 
