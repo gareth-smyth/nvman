@@ -1,6 +1,6 @@
 
 ifeq ($(OS),Windows_NT)
-	DELCOM = del -f
+	DELCOM = del /f
 else
 
 UNAME_S := $(shell uname -s)
